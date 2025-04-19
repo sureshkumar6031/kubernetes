@@ -37,8 +37,9 @@ employee-management/
 ---
 #**📦 Docker Installation**
 # 1. Update package list
+```bash
 sudo apt update
-
+---
 # 2. Install prerequisite packages
 sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 
