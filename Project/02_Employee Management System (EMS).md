@@ -66,11 +66,12 @@ sudo systemctl enable docker
 # 9. (Optional) Run Docker as non-root user
 sudo usermod -aG docker $USER
 newgrp docker
-
+```
 
 ---
 
 **☸️ Install MicroK8s**
+```bash
 sudo apt install snap
 
 sudo snap install microk8s --classic
@@ -78,11 +79,11 @@ sudo snap install microk8s --classic
 sudo microk8s enable dns ingress storage dashboard
 
 sudo microk8s kubectl version
-
+```
 ---
 
 **🟢 Node.js & NPM Setup**
-
+```bash
 # 1. Update and install curl
 sudo apt update
 
@@ -108,26 +109,34 @@ nvm alias default 22
 node -v
 
 npm -v
+```
+
 ---
 #⚙️ **Angular CLI Setup**
 # Install Angular CLI globally
+```bash
 npm install -g @angular/cli
 
 # Check Angular CLI version
 ng version
+```
 
 **☕ Spring Boot Setup**
 # Install OpenJDK 17
+```bash
 sudo apt update
 
 sudo apt install openjdk-17-jdk -y
 
 java -version
+```
 
-# Clone Spring Boot project
+# * Clone Spring Boot project*
+```bash
 git clone https://github.com/Shraddhasalunke/Employee-Management-System-Angular-Spring-boot.git
 
 cd Employee-Management-System-Angular-Spring-boot
+```
 
 ## 🐳 Step 1: Prepare Docker Images
 
