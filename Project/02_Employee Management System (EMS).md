@@ -68,17 +68,23 @@ newgrp docker
 
 
 ---
+
 **☸️ Install MicroK8s**
 sudo apt install snap
+
 sudo snap install microk8s --classic
+
 sudo microk8s enable dns ingress storage dashboard
+
 sudo microk8s kubectl version
+
 ---
 
 **🟢 Node.js & NPM Setup**
 
 # 1. Update and install curl
 sudo apt update
+
 sudo apt install curl -y
 
 # 2. Install NVM
@@ -86,6 +92,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
 # 3. Load NVM into terminal
 export NVM_DIR="$HOME/.nvm"
+
 source "$NVM_DIR/nvm.sh"
 
 # 4. Install Node.js version 22
@@ -111,11 +118,14 @@ ng version
 **☕ Spring Boot Setup**
 # Install OpenJDK 17
 sudo apt update
+
 sudo apt install openjdk-17-jdk -y
+
 java -version
 
 # Clone Spring Boot project
 git clone https://github.com/Shraddhasalunke/Employee-Management-System-Angular-Spring-boot.git
+
 cd Employee-Management-System-Angular-Spring-boot
 
 ## 🐳 Step 1: Prepare Docker Images
@@ -165,8 +175,6 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ```Dockerfile
 FROM mysql:8
 ```
-
----
 
 ### 🛠️ Build and Push Images
 
