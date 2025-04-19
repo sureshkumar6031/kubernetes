@@ -92,14 +92,14 @@ source "$NVM_DIR/nvm.sh"
 nvm install 22
 
 # 5. Set Node.js 22 as default
-nvm use 22
+nvm use 22 
+
 nvm alias default 22
 
 # 6. Verify versions
 node -v
+
 npm -v
-
-
 ---
 #⚙️ **Angular CLI Setup**
 # Install Angular CLI globally
