@@ -35,33 +35,126 @@ employee-management/
 ```
 
 ---
+#**📦 Docker Installation**
+# 1. Update package list
+sudo apt update
+
+# 2. Install prerequisite packages
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+
+# 3. Add Docker’s official GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# 4. Add Docker’s official APT repository
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 5. Update package list again
+sudo apt update
+
+# 6. Install Docker Engine
+sudo apt install docker-ce docker-ce-cli containerd.io -y
+
+# 7. Start Docker
+sudo systemctl start docker
+
+# 8. Enable Docker to start on boot
+sudo systemctl enable docker
+
+# 9. (Optional) Run Docker as non-root user
+sudo usermod -aG docker $USER
+newgrp docker
+
+
+---
+**☸️ Install MicroK8s**
+sudo apt install snap
+sudo snap install microk8s --classic
+sudo microk8s enable dns ingress storage dashboard
+sudo microk8s kubectl version
+---
+
+**🟢 Node.js & NPM Setup**
+
+# 1. Update and install curl
+sudo apt update
+sudo apt install curl -y
+
+# 2. Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# 3. Load NVM into terminal
+export NVM_DIR="$HOME/.nvm"
+source "$NVM_DIR/nvm.sh"
+
+# 4. Install Node.js version 22
+nvm install 22
+
+# 5. Set Node.js 22 as default
+nvm use 22
+nvm alias default 22
+
+# 6. Verify versions
+node -v
+npm -v
+
+
+---
+#⚙️ **Angular CLI Setup**
+# Install Angular CLI globally
+npm install -g @angular/cli
+
+# Check Angular CLI version
+ng version
+
+**☕ Spring Boot Setup**
+# Install OpenJDK 17
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+java -version
+
+# Clone Spring Boot project
+git clone https://github.com/Shraddhasalunke/Employee-Management-System-Angular-Spring-boot.git
+cd Employee-Management-System-Angular-Spring-boot
 
 ## 🐳 Step 1: Prepare Docker Images
 
 ### 🔹 Angular Frontend Dockerfile (frontend/Dockerfile)
 ```Dockerfile
-# Angular Dockerfile
-FROM node:16-alpine as build
+# Stage 1: Build Angular App
+FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+RUN npm install -g @angular/cli
 COPY . .
-RUN npm run build --prod
+ENV NODE_OPTIONS=--openssl-legacy-provider
+RUN npm run build
 
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist/employee-frontend /usr/share/nginx/html
+COPY --from=build /app/dist/angular-frontend /usr/share/nginx/html
 EXPOSE 4200
 CMD ["nginx", "-g", "daemon off;"]
+
 ```
 
 ---
-
 ### 🔹 Spring Boot Backend Dockerfile (backend/Dockerfile)
 ```Dockerfile
-# Spring Boot Dockerfile
-FROM openjdk:17-jdk-slim
+# Stage 1: Build the application
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
-COPY target/employee-backend.jar app.jar
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
@@ -80,11 +173,11 @@ FROM mysql:8
 ```bash
 docker build -t yourusername/employee-frontend:1.0 ./frontend
 docker build -t yourusername/employee-backend:1.0 ./backend
-docker pull mysql:8
+docker build -t yourusername/employee-db:1.0 ./db
 
 docker push yourusername/employee-frontend:1.0
 docker push yourusername/employee-backend:1.0
-docker push mysql:8
+docker push yourusername/employee-db:1.0
 ```
 
 ---
@@ -239,10 +332,10 @@ spec:
 ## 🚀 Step 3: Deploy to Kubernetes
 
 ```bash
-kubectl apply -f namespace.yaml
-kubectl apply -f mysql-deployment.yaml
-kubectl apply -f backend-deployment.yaml
-kubectl apply -f frontend-deployment.yaml
+microk8s kubectl apply -f namespace.yaml
+microk8s kubectl apply -f mysql-deployment.yaml
+microk8s kubectl apply -f backend-deployment.yaml
+microk8s kubectl apply -f frontend-deployment.yaml
 ```
 
 ---
@@ -250,8 +343,8 @@ kubectl apply -f frontend-deployment.yaml
 ## ✅ Step 4: Verify
 
 ```bash
-kubectl get pods -n ems-app
-kubectl get svc -n ems-app
+microk8s kubectl get pods -n ems-app
+microk8s kubectl get svc -n ems-app
 ```
 
 ### Access Frontend
